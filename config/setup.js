@@ -14,7 +14,7 @@ let api_router = require("../routes/router")
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
     
-    let port = process.env.PORT || 8010;
+    let port = 8010;
     const prefix = '/api';
     app.use(prefix, api_router);
      // On démarre le serveur

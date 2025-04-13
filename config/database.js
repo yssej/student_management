@@ -2,10 +2,9 @@
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-require('dotenv').config()
 
 const connectToDatabase = async () => {
-    const uri = process.env.MONGO_URI;
+    const uri = "mongodb+srv://Jessy:jessy@cluster0.o8hcjvl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
     const options = {};
 
     try {
