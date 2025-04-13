@@ -47,16 +47,52 @@ async function updateOrCreate(studentData, id=null) {
 
 }
 
-async function GetAll() {
-  try {
-    return new ReturnType(1 , "get_all_student" ,"" , await Student.find())
-
-  }catch(err) {
-    
-    throw err
+async function GetAll(search = "", page = 1, limit = 6) {
+    try {
+      let query = {};
+  
+      if (search && typeof search === "string") {
+        query = {
+          $or: [
+            { firstName: { $regex: search, $options: 'i' } },
+            { lastName: { $regex: search, $options: 'i' } }
+          ]
+        };
+      }
+  
+      const skip = (page - 1) * limit;
+  
+      const [students, total] = await Promise.all([
+        Student.find(query).skip(skip).limit(limit),
+        Student.countDocuments(query),
+      ]);
+  
+      const totalPages = Math.ceil(total / limit);
+  
+      return new ReturnType(1, "get_all_student", "", {
+        students,
+        total,
+        page,
+        totalPages,
+      });
+  
+    } catch (err) {
+      throw err;
+    }
   }
+  
+  
 
-}
+async function GetById(id) {
+    try {
+      return new ReturnType(1 , "get_student_by_id" ,"" , await Student.findById(id))
+  
+    }catch(err) {
+      
+      throw err
+    }
+  
+  }
 
 async function destroy(id) {
 
@@ -77,5 +113,6 @@ async function destroy(id) {
 module.exports = {
     updateOrCreate ,
     GetAll ,
-    destroy
+    destroy ,
+    GetById
 }
