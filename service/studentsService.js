@@ -12,10 +12,10 @@ async function updateOrCreate (studentData , id=null) {
 }
 
 
-async function GetAll() {
+async function GetAll(search="" , page = 1, limit = 6) {
     try {
 
-     const data =  await _studentManager.GetAll()
+     const data =  await _studentManager.GetAll(search ,page ,limit)
      return data
 
     }catch(err) {
@@ -34,8 +34,20 @@ async function destroy (id) {
     }
 }
 
+async function getById (id) {
+
+    try {
+          const data = await _studentManager.GetById(id)
+          return data
+
+    }catch(err) {
+        throw err
+    }
+}
+
 module.exports = {
     updateOrCreate ,
     GetAll ,
-    destroy
+    destroy ,
+    getById
 }

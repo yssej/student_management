@@ -20,8 +20,15 @@ async function updateOrCreate(req, res) {
 
 async function getAll(req, res) {
 
+    const search = req.query.search ? req.query.search  : ""
+
+    const page = req.query.page 
+
+    const limit = req.query.limit
+
+
     try {
-        const data = await _studentService.GetAll()
+        const data = await _studentService.GetAll(search ,page ,limit)
         return res.status(200).json({ index: data.index, status: data.status, message: data.message, data: data.data })
     } catch (err) {
         return res.status(500).json({ index: data.index, status: data.status, message: data.message, data: null })
@@ -41,8 +48,22 @@ async function destroy(req ,res) {
     }
 }
 
+async function getById(req ,res) {
+
+    const id = req.query.id
+    try {
+        const data = await _studentService.getById(id)
+        return  res.status(200).json({index : data.index , status : data.status , message : data.message , data : data.data})
+
+    }catch(err) {
+        return  res.status(500).json({index : data.index , status : data.status , message : data.message , data : null})
+
+    }
+}
+
 module.exports = {
     updateOrCreate,
     getAll , 
-    destroy
+    destroy ,
+    getById
 }
