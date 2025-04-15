@@ -11,6 +11,8 @@ mongoose.Promise = global.Promise;
 
 // TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
 const uri = '...';
+mongodb://localhost:27017/
+mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<>?retryWrites=true&w=majority
 
 const options = {};
 
