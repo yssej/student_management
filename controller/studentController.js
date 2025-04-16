@@ -61,9 +61,27 @@ async function getById(req ,res) {
     }
 }
 
+async function Import (req ,res) {
+    console.log(req.file)
+    const path = req.file.path 
+
+    try {
+        const data = await _studentService.Import(path)
+        return  res.status(200).json({index : data.index , status : data.status , message : data.message , data : data.data})
+
+    }catch(err) {
+        return  res.status(500).json({index : data.index , status : data.status , message : data.message , data : null})
+    }
+
+}
+
+
+
+
 module.exports = {
     updateOrCreate,
     getAll , 
     destroy ,
-    getById
+    getById ,
+    Import
 }

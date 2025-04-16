@@ -11,7 +11,7 @@ let api_router = require("../routes/router")
     // Pour accepter les connexions cross-domain (CORS)
     app.use(cors.config);
     // Pour les formulaires
-    app.use(bodyParser.urlencoded({extended: true}));
+    // app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
     
     let port = 8010;
