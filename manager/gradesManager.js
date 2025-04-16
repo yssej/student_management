@@ -52,15 +52,79 @@ async function updateOrCreate(gradeData, id) {
 }
 
 
-async function getAll() {
-
+async function getAll(search = "", page = 1, limit = 6) {
     try {
-        return new ReturnType(1, "get_grades", "", await Grade.find().populate('student').populate('course'))
-
+      const pageNum = parseInt(page, 10);
+      const limitNum = parseInt(limit, 10);
+  
+      const skipNum = (pageNum - 1) * limitNum;
+  
+      const matchStage = search
+        ? {
+            $match: {
+              $or: [
+                { "studentDoc.firstName": { $regex: search, $options: "i" } },
+                { "studentDoc.lastName": { $regex: search, $options: "i" } },
+                { "courseDoc.name": { $regex: search, $options: "i" } },
+              ],
+            },
+          }
+        : { $match: {} };
+  
+      const pipeline = [
+        {
+          $lookup: {
+            from: "students",
+            localField: "student",
+            foreignField: "_id",
+            as: "studentDoc",
+          },
+        },
+        {
+          $lookup: {
+            from: "courses",
+            localField: "course",
+            foreignField: "_id",
+            as: "courseDoc",
+          },
+        },
+        { $unwind: "$studentDoc" },
+        { $unwind: "$courseDoc" },
+  
+        matchStage,
+  
+        { $skip: skipNum },
+        { $limit: limitNum },
+      ];
+  
+      const countPipeline = [
+        pipeline[0],
+        pipeline[1],
+        pipeline[2],
+        pipeline[3],
+        pipeline[4], // the $match stage
+        { $count: "count" },
+      ];
+  
+      const [grades, totalCountArr] = await Promise.all([
+        Grade.aggregate(pipeline),
+        Grade.aggregate(countPipeline),
+      ]);
+  
+      const total = totalCountArr?.[0]?.count || 0;
+      const totalPages = Math.ceil(total / limitNum);
+  
+      return new ReturnType(1, "get_grades", "", {
+        grades,
+        total,
+        page: pageNum,
+        totalPages,
+      });
     } catch (err) {
-        throw err
+      return new ReturnType(0, "get_grades", err.message, {});
     }
-}
+  }
+  
 
 
 async function destroy(id) {

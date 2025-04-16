@@ -22,7 +22,13 @@ async function updateOrCreate(req, res) {
 async function getAll(req, res) {
 
     try {
-        const data = await _gradeService.GetAll()
+        const search = req.query.search ? req.query.search  : ""
+    
+        const page = req.query.page 
+    
+        const limit = req.query.limit
+
+        const data = await _gradeService.GetAll(search, page, limit)
         return res.status(200).json({ index: data.index, status: data.status, message: data.message, data: data.data })
     } catch (err) {
         return res.status(500).json({ index: data.index, status: data.status, message: data.message, data: null })

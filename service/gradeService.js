@@ -12,10 +12,10 @@ async function updateOrCreate (gradeData , id=null) {
 }
 
 
-async function GetAll() {
+async function GetAll(search="" , page = 1, limit = 6) {
     try {
 
-     const data =  await _gradeManager.getAll()
+     const data =  await _gradeManager.getAll(search, page, limit)
      return data
 
     }catch(err) {
