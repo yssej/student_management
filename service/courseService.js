@@ -23,6 +23,16 @@ async function GetAll() {
     }
 }
 
+async function getById(id) {
+    try {
+      const data = await _courseManager.getById(id);
+      return data;
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+
 async function destroy (id) {
 
     try {
@@ -37,5 +47,6 @@ async function destroy (id) {
 module.exports = {
     updateOrCreate ,
     GetAll ,
-    destroy
+    destroy,
+    getById
 }

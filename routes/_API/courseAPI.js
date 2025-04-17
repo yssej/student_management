@@ -5,7 +5,8 @@ const _courseController = require("../../controller/courseController")
 
 
 route.post('/', _courseController.updateOrCreate);
-route.get("/" ,_courseController.getAll)
-route.delete("/" , _courseController.destroy)
+route.get("/" ,_courseController.getAll);
+route.delete("/" , _courseController.destroy);
+route.get("/getById", _courseController.getById);
 
 module.exports = route;

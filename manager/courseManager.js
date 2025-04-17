@@ -1,51 +1,39 @@
 let {Course} = require("../model/schemas");
 const ReturnType = require("../utile/ReturnType");
 
-async function updateOrCreate(courseData, id=null) {
-
-
+async function updateOrCreate(courseData, id = null) {
     try {
-
         let course;
-        let update = false
-        let create = false
-        console.log(courseData)
+        let action;
 
         if (id) {
-            student = await Course.findById(id)
-            if (!student) {
-
-                throw ("le cours n'existe pas")
+            course = await Course.findById(id);
+            if (!course) {
+                throw new Error("Le cours n'existe pas");
             }
-            update = true
-            create = false
-            course.name = courseData.name
-            course.code = courseData.code
-
-
-        } else {
-            update = false
-            create = true
-            course = new Course();
             course.name = courseData.name;
             course.code = courseData.code;
-   }
+            action = "update";
+        } else {
+            course = new Course({
+                name: courseData.name,
+                code: courseData.code
+            });
+            action = "create";
+        }
 
-        const courseDataInsert = await course.save();
-         if(update) {
-            return new ReturnType(1, "update_success", "le cours a été mis a jour avec succée", courseDataInsert)
+        const courseSaved = await course.save();
 
-         } else if(create) {
-            return new ReturnType(1, "create_success", "le cours a été a insérer avec succée", courseDataInsert)
-
-         }
-
+        if (action === "update") {
+            return new ReturnType(1, "update_success", "Le cours a été mis à jour avec succès", courseSaved);
+        } else {
+            return new ReturnType(1, "create_success", "Le cours a été inséré avec succès", courseSaved);
+        }
 
     } catch (err) {
-        console.error(err)
-        return new ReturnType(-1, "failed_update_or_create", "Erreur sur la creation d'un etudiant", null)
+        console.error(err);
+        return new ReturnType(-1, "failed_update_or_create", "Erreur sur la création ou la mise à jour du cours", null);
     }
-
 }
 
 
@@ -76,9 +64,23 @@ async function getAll() {
     }
 }
 
+async function getById(id) {
+    try {
+      const course = await Course.findById(id);
+      if (!course) {
+        return new ReturnType(-1, "not_found", "Le cours n'existe pas", null);
+      }
+      return new ReturnType(1, "get_course_success", "Cours récupéré avec succès", course);
+    } catch (err) {
+      console.error(err);
+      return new ReturnType(-1, "failed_get_by_id", "Erreur lors de la récupération du cours", null);
+    }
+  }
+
 module.exports = {
     updateOrCreate ,
     getAll ,
-    destroy
+    destroy,
+    getById
 }
 
