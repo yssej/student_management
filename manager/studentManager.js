@@ -96,6 +96,7 @@ async function GetAll(search = "", page = 1, limit = 6) {
         Student.countDocuments(query),
       ]);
   
+      const allStudent = await Student.find()
       const totalPages = Math.ceil(total / limit);
   
       return new ReturnType(1, "get_all_student", "", {
@@ -103,6 +104,7 @@ async function GetAll(search = "", page = 1, limit = 6) {
         total,
         page,
         totalPages,
+        allStudent
       });
   
     } catch (err) {
