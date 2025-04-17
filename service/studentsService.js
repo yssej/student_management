@@ -45,9 +45,21 @@ async function getById (id) {
     }
 }
 
+async function Import (filePath) {
+
+    try {
+        const data = await _studentManager.Import(filePath)
+        return data
+
+    }catch(err) {
+        throw err
+    }
+}
+
 module.exports = {
     updateOrCreate ,
     GetAll ,
     destroy ,
-    getById
+    getById ,
+    Import
 }
